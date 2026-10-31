@@ -26,8 +26,8 @@ step() {
 }
 
 clear
-step "1. The function we test, and its unit test" \
-     "sed -n '13,26p' $SRC; echo '────────'; sed -n '8,17p' tests/unit/test_normalize.py"
+step "1. How the tests are organized, the function we test, and its unit test" \
+     "find tests -name '*.py' | sort; echo '────────'; sed -n '13,26p' $SRC; echo '────────'; sed -n '8,17p' tests/unit/test_normalize.py"
 
 step "2. Unit tests: one function, isolated, fast" \
      "$PYTEST tests/unit -v"
