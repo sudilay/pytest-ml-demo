@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Step-by-step demo: press Enter to run each command.
+# Step-by-step demo: each Enter runs the next command.
 # The original pipeline.py is ALWAYS restored on exit (even on errors or Ctrl-C).
 set -u
 cd "$(dirname "$0")"
@@ -21,7 +21,7 @@ trap "exit 130" INT TERM
 step() {
   echo -e "\n\033[1;36m━━ $1\033[0m"
   echo -e "\033[1;33m\$ $2\033[0m"
-  read -r -p "  (press Enter) "
+  read -r
   eval "$2"
 }
 
