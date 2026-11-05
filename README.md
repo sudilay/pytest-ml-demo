@@ -16,12 +16,13 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/pytest tests/unit         # only unit tests (fast)
 .venv/bin/pytest -m integration     # only integration tests
 .venv/bin/pytest --cov=src          # with coverage
+.venv/bin/python src/pipeline.py    # run the pipeline, print its accuracy
 ./demo.sh                           # step-by-step class demo (press Enter)
 ```
 
 ## The demo's point
 `demo.sh` injects a bug: `normalize` divides by **max** instead of **std**.
-- Integration tests **still pass**: the model still reaches ~0.87 accuracy (it was 0.91). The bug is silent.
+- Integration tests **still pass**: accuracy drops from 0.911 to 0.867, but that is still above 0.8. The bug is silent.
 - Unit tests **fail** and show exactly which function is wrong and by how much.
 
 That is why you need both: integration tests check that the parts fit together, unit tests check that each part is correct.

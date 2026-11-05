@@ -6,6 +6,8 @@ cd "$(dirname "$0")"
 
 PYTEST=".venv/bin/pytest"
 [ -x "$PYTEST" ] || PYTEST="pytest"
+PY=".venv/bin/python"
+[ -x "$PY" ] || PY="python3"
 SRC="src/pipeline.py"
 BACKUP="src/pipeline.py.bak"
 
@@ -26,27 +28,24 @@ step() {
 }
 
 clear
-step "1. How the tests are organized, the function we test, and its unit test" \
-     "find tests -name '*.py' | sort; echo '────────'; sed -n '13,26p' $SRC; echo '────────'; sed -n '8,17p' tests/unit/test_normalize.py"
-
-step "2. Unit tests: one function, isolated, fast" \
+step "1. Unit tests: one function, isolated, fast" \
      "$PYTEST tests/unit -v"
 
-step "3. Integration tests: the whole pipeline together" \
-     "$PYTEST -m integration -v"
+step "2. Integration tests: the whole pipeline together, then its accuracy" \
+     "$PYTEST -m integration -v; $PY $SRC"
 
-step "4a. Introduce a bug: divide by max instead of std" \
+step "3a. Introduce a bug: divide by max instead of std" \
      "cp $SRC $BACKUP && perl -pi -e 's|- mean\) / std|- mean) / np.asarray(X).max(axis=0)|' $SRC && diff $BACKUP $SRC"
 
 if ! grep -q "max(axis=0)" "$SRC"; then
   echo "Bug was not applied, stopping."; exit 1
 fi
 
-step "4b. Run the integration tests: does the pipeline notice?" \
-     "$PYTEST -m integration -q"
+step "3b. Integration tests again: does the pipeline notice?" \
+     "$PYTEST -m integration -q; $PY $SRC"
 
-step "4c. Run the unit tests: does normalize() notice?" \
+step "3c. Unit tests again: does normalize() notice?" \
      "$PYTEST tests/unit -q --tb=short --show-capture=no -p no:warnings"
 
-step "5. Fix the bug and run everything again" \
+step "4. Fix the bug and run everything again" \
      "restore; $PYTEST -q"

@@ -44,3 +44,8 @@ def run_pipeline(seed=42):
     model = train(normalize(X_train, mean, std), y_train, seed)
     y_pred = predict(model, normalize(X_test, mean, std))
     return y_pred, y_test
+
+
+if __name__ == "__main__":  # pragma: no cover
+    y_pred, y_test = run_pipeline()
+    print(f"accuracy = {(y_pred == y_test).mean():.3f}")
