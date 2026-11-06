@@ -19,7 +19,7 @@ def test_normalized_columns_have_mean_0_and_std_1(small_X):
     "value, expected",
     [
         (0.0, -1.0),   # left end
-        (5.0, 0.0),    # the mean
+        (2.5, -0.5),   # between the left end and the mean
         (10.0, 1.0),   # right end
     ],
 )
